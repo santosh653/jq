@@ -21,7 +21,7 @@ jobs:
             os: linux
             compiler: gcc
             python: 3.6
-
+            arch: amd64
             addons:
                 apt:
                     packages:
@@ -88,12 +88,13 @@ jobs:
         # Build with clang and run tests on Ubuntu.
         -   <<: *test-ubuntu
             compiler: clang
+            arch: amd64
 
 
         # Build with gcc and run tests with gcov on Ubuntu.
         -   <<: *test-ubuntu
             env: COVERAGE="--disable-valgrind --enable-gcov"
-
+            arch: amd64
             after_script:
                 - rm -rf src/.libs # don't care about coverage for libjq
                 - coveralls --gcov-options '\-lp'
@@ -104,6 +105,7 @@ jobs:
         -   &test-osx
             <<: *test-ubuntu
             os: osx
+            arch: amd64
 
             before_install:
                 - uname -s
@@ -124,6 +126,7 @@ jobs:
         # Build with clang and run tests on macOS.
         -   <<: *test-osx
             compiler: clang
+            arch: amd64
 
 
         # Build with gcc and run tests on Alpine Linux v3.7 (inside chroot).
@@ -134,7 +137,7 @@ jobs:
             language: minimal
             compiler: gcc
             sudo: true
-
+            arch: amd64
             before_install:
                 - "wget 'https://raw.githubusercontent.com/alpinelinux/alpine-chroot-install/v0.7.0/alpine-chroot-install' \
                     && echo '090d323d887ef3a2fd4e752428553f22a52b87bb  alpine-chroot-install' | sha1sum -c || travis_terminate 1"
@@ -165,6 +168,7 @@ jobs:
             <<: *test-alpine
             stage: build
             env: ARCH=x86_64
+            arch: amd64
 
             script:
                 - alpine ./configure --disable-docs --enable-all-static
@@ -197,15 +201,19 @@ jobs:
         # Build binaries for other architectures using QEMU user-mode emulation.
         -   <<: *build-alpine
             env: ARCH=x86
+            arch: amd64
 
         -   <<: *build-alpine
             env: ARCH=aarch64
+            arch: amd64
 
         -   <<: *build-alpine
             env: ARCH=armhf
+            arch:amd64
 
         -   <<: *build-alpine
             env: ARCH=ppc64le
+            arch: amd64
 
 
 notifications:
